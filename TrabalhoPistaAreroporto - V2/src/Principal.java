@@ -36,6 +36,7 @@ public class Principal extends javax.swing.JFrame {
     DefaultTableModel modelPista;
     DefaultTableModel modelGates;
 
+
     public Principal() throws InterruptedException {
         initComponents();
         //modelos das tabelas
@@ -400,26 +401,18 @@ public class Principal extends javax.swing.JFrame {
                 //NÃO ESTÁ FUNCI0NANDO1!!
                 //mostra a PISTA sendo ocupada por 2 segundos                 
                 //populaTabela(modelPista, aviao);
-//                modelPista.setRowCount(0);
-//                modelPista.addRow(new String[]{
-//                    aviao.getCodigoVoo(),
-//                    aviao.getOrigem(),
-//                    Float.toString(aviao.getQuantidadeCombustivel()),
-//                    Float.toString(aviao.getPeso()),
-//                    tipoPrioridade[aviao.getPrioridade()],
-//                    Integer.toString(aviao.getHoraVoo()),
-//                    statusAviao[aviao.getStatus()]});
-//                jTextAreaPista.append(aviao.getCodigoVoo()+"\n");
-                Runnable r = new MyThread(this, aviao);
-                new Thread(r).start();
 
-                try {
-                    Thread.sleep(2000);
-                    notify();
-                } catch (InterruptedException ex) {
-
-                }
-                jTextAreaPista.setText("");
+                jTextAreaPista.append(aviao.getCodigoVoo()+"\n");
+//                Runnable r = new MyThread(this, aviao);
+//                new Thread(r).start();
+//
+//                try {
+//                    Thread.sleep(2000);
+//                    notify();
+//                } catch (InterruptedException ex) {
+//
+//                }
+//                jTextAreaPista.setText("");
 
                 //popula as tabelas
                 populaTabela(modelFilaPouso, filaPouso);
@@ -443,9 +436,23 @@ public class Principal extends javax.swing.JFrame {
                         }
                     }
                 }
-
                 //popular tabela gates
                 populaTabela(modelGates, aeroporto.portoes);
+                
+                //a cada 2 voltas no 
+                if(iteracoes == 2){
+                    //remover o aviao do gate
+                    //zera combustivel 
+                    //atualiza o combustivel para um valor random
+                    //adicionar na fila de taxiamento
+                    //pegar a hora do sistema e adicionar um random de 50 a 200 na hora de voo do aviao    
+                    iteracoes = 0;
+                }
+                
+                //taxiamento para decolar
+                 
+                
+                
 
                 //aqui temos que verificar prioridades
                 // 1 maior prioridade é aquele que esta voando e tem pouco combustivel 

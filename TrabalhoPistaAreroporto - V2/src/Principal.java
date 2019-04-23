@@ -1,9 +1,11 @@
 
+import static java.lang.Thread.sleep;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,7 +25,9 @@ public class Principal extends javax.swing.JFrame {
     //listas das filas
     LinkedList<Aviao> filaPouso = new LinkedList<>();
     LinkedList<Aviao> filaTaxiamento = new LinkedList<>();
-    LinkedList<Aviao> filaEstacioamento = new LinkedList<>();
+    LinkedList<Aviao> filaEstacionamento = new LinkedList<>();
+    Aeroporto aeroporto = new Aeroporto();
+    //
 
     //modelo das tabelas
     DefaultTableModel modelFilaPouso;
@@ -32,13 +36,13 @@ public class Principal extends javax.swing.JFrame {
     DefaultTableModel modelPista;
     DefaultTableModel modelGates;
 
-    public Principal() {
+    public Principal() throws InterruptedException {
         initComponents();
         //modelos das tabelas
         modelFilaPouso = (DefaultTableModel) jTableFilaPouso.getModel();
         modelFilaTaxiamento = (DefaultTableModel) jTableFilaTaxiamento.getModel();
         modelFilaEstacionamento = (DefaultTableModel) jTableFilaEstacionamento.getModel();
-        modelPista = (DefaultTableModel) jTablePista.getModel();
+//        modelPista = (DefaultTableModel) jTablePista.getModel();
         modelGates = (DefaultTableModel) jTableGates.getModel();
 
         //setar hora
@@ -48,6 +52,9 @@ public class Principal extends javax.swing.JFrame {
         //inica com 30 aviões na fila de pouso
         criarAviao(filaPouso, 0, 0, 30);
         populaTabela(modelFilaPouso, filaPouso);
+
+        //inicar o funcionamento do aeroporto
+        //iniciar();
     }
 
     @SuppressWarnings("unchecked")
@@ -58,8 +65,6 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableFilaPouso = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTablePista = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableFilaTaxiamento = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
@@ -76,6 +81,8 @@ public class Principal extends javax.swing.JFrame {
         jButtonPopular = new javax.swing.JButton();
         jLabelHora = new javax.swing.JLabel();
         jLabelUpdateHora = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTextAreaPista = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FILA PARA USO DA PISTA DO AEROPORTO");
@@ -103,24 +110,6 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("PISTA PRINCIPAL");
-
-        jTablePista.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Código", "Origem", "Combustível", "Peso", "Prioridade", "Hora", "ESTADO"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane3.setViewportView(jTablePista);
 
         jTableFilaTaxiamento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -218,6 +207,10 @@ public class Principal extends javax.swing.JFrame {
 
         jLabelUpdateHora.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
+        jTextAreaPista.setColumns(20);
+        jTextAreaPista.setRows(5);
+        jScrollPane6.setViewportView(jTextAreaPista);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,14 +219,15 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 771, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabelHora)
                                 .addGap(1, 1, 1)
-                                .addComponent(jLabelUpdateHora, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabelUpdateHora, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane6))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -285,9 +279,9 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -313,7 +307,7 @@ public class Principal extends javax.swing.JFrame {
         //limpar listas antes de popular
         filaPouso.clear();
         filaTaxiamento.clear();
-        filaEstacioamento.clear();
+        filaEstacionamento.clear();
 
         // criar um dialogo que pede quantidade de avioes em cada fila
         //Chama o criarAviao(LinkedList<Aviao> fila, int status, int tipoFila, int quantidade)
@@ -328,7 +322,7 @@ public class Principal extends javax.swing.JFrame {
         //POPULAR TABELAS
         populaTabela(modelFilaPouso, filaPouso);
         populaTabela(modelFilaTaxiamento, filaTaxiamento);
-        populaTabela(modelFilaEstacionamento, filaEstacioamento);
+        populaTabela(modelFilaEstacionamento, filaEstacionamento);
         //liberar o iniciar
         jButtonIniciar.setEnabled(true);
     }//GEN-LAST:event_jButtonPopularActionPerformed
@@ -355,20 +349,24 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+                try {
+                    new Principal().setVisible(true);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -376,33 +374,78 @@ public class Principal extends javax.swing.JFrame {
     //inicia todo o funcionamento do aeroporto
     private void iniciar() {
         //estancia o aeroporto
-        Aeroporto aeroporto = new Aeroporto();
+
+        aeroporto.statusPista = false;
+
         int iteracoes = 0;
+
         //enquanto tiver avioes para usar a pista, continua o funcionamento
-        while (!filaPouso.isEmpty() && !filaEstacioamento.isEmpty() && !filaTaxiamento.isEmpty()) {
-            //preencher gates
-            for (int x = 0; x < filaEstacioamento.size(); x++) {
-                for (int i = 0; i < aeroporto.portoes.length; i++) {
-                    if (aeroporto.portoes[i] == null) {
-                        aeroporto.portoes[i] = filaEstacioamento.get(x);
-                        jTextAreaHistorico.append("Aviao " + filaEstacioamento.get(x).getCodigoVoo() + " foi para o portão " + (i + 1) + "\n");
-                        filaEstacioamento.remove(x);
-                        x--;
-                        populaTabela(modelFilaEstacionamento, filaEstacioamento); //atualizar tabela estacionamento
-                        break;
-                    }
-                }
-            }
-            //popular tabela gates
-            populaTabela(modelGates, aeroporto.portoes);
+        while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty()) {
 
             //verificar pista
             if (!aeroporto.statusPista) {
-                aeroporto.statusPista = true; //ocupa a pista
+                //ocupa a pista
+                aeroporto.statusPista = true;
 
-                
-                System.out.println("Código do voo com maior prioridade :" + filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0)).getCodigoVoo() + " Prioridade: " + filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0)).getPrioridade());
+                //atribui ao objeto "aviao" o aviao com maior prioridade
+                Aviao aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
+                //print teste
+                System.out.println("Código do voo com maior prioridade: " + aviao.getCodigoVoo() + " Prioridade " + aviao.getPrioridade());
+
+                //antes de remover o aviao de fila de pouso, adiciona na filaEstacionamento
+                filaEstacionamento.add(aviao);
+                //remove da fila de pouso
                 filaPouso.remove(filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0)));
+
+                //NÃO ESTÁ FUNCI0NANDO1!!
+                //mostra a PISTA sendo ocupada por 2 segundos                 
+                //populaTabela(modelPista, aviao);
+//                modelPista.setRowCount(0);
+//                modelPista.addRow(new String[]{
+//                    aviao.getCodigoVoo(),
+//                    aviao.getOrigem(),
+//                    Float.toString(aviao.getQuantidadeCombustivel()),
+//                    Float.toString(aviao.getPeso()),
+//                    tipoPrioridade[aviao.getPrioridade()],
+//                    Integer.toString(aviao.getHoraVoo()),
+//                    statusAviao[aviao.getStatus()]});
+//                jTextAreaPista.append(aviao.getCodigoVoo()+"\n");
+                Runnable r = new MyThread(this, aviao);
+                new Thread(r).start();
+
+                try {
+                    Thread.sleep(2000);
+                    notify();
+                } catch (InterruptedException ex) {
+
+                }
+                jTextAreaPista.setText("");
+
+                //popula as tabelas
+                populaTabela(modelFilaPouso, filaPouso);
+                populaTabela(modelFilaEstacionamento, filaEstacionamento);
+
+                //inseri no histórico
+                jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+                //inserir que o aviao foi para a fila de estacionamento
+                jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
+
+                //preencher gates
+                for (int x = 0; x < filaEstacionamento.size(); x++) {
+                    for (int i = 0; i < aeroporto.portoes.length; i++) {
+                        if (aeroporto.portoes[i] == null) {
+                            aeroporto.portoes[i] = filaEstacionamento.get(x);
+                            jTextAreaHistorico.append("Aviao " + filaEstacionamento.get(x).getCodigoVoo() + " foi para o portão " + (i + 1) + "\n");
+                            filaEstacionamento.remove(x);
+                            x--;
+                            populaTabela(modelFilaEstacionamento, filaEstacionamento); //atualizar tabela estacionamento
+                            break;
+                        }
+                    }
+                }
+
+                //popular tabela gates
+                populaTabela(modelGates, aeroporto.portoes);
 
                 //aqui temos que verificar prioridades
                 // 1 maior prioridade é aquele que esta voando e tem pouco combustivel 
@@ -418,6 +461,8 @@ public class Principal extends javax.swing.JFrame {
                 //o starvation vai ser um gasto de gasolina para todos que estao voando (pesados gastam mais)
                 //o starvation da hora, a cada loop aumenta o horario fictício do sistema
                 //a fila de taximanto verifica a hora para mudar seus status para atrasado(emergencia) caso tenha 
+                //libera a pista
+                aeroporto.statusPista = false;
             }
             //setar nova hora
             jLabelHora.setText("HORA: " + hora);
@@ -427,21 +472,25 @@ public class Principal extends javax.swing.JFrame {
     }
 
     //método para pegar o index do aviao com maior prioridade na fila
-    public int getMaxPrioridade(LinkedList<Aviao> fila, String tipoPrioridade[], int tipoFila) {
+    private int getMaxPrioridade(LinkedList<Aviao> fila, String tipoPrioridade[], int tipoFila) {
         // 0 - filaPouso  1 - filaTaxiamento 2 - filaEstacioamento
-        //2 max prioridade 
         if (tipoFila == 0) {
             for (int i = tipoPrioridade.length - 1; i <= tipoPrioridade.length; i--) {
                 for (int j = 0; j < filaPouso.size(); j++) {
                     if (filaPouso.get(j).getPrioridade() == i) {
+
+                        float gasolina = filaPouso.get(j).getQuantidadeCombustivel();
+                        gasolina -= 50;
+                        filaPouso.get(j).setQuantidadeCombustivel(gasolina);
+
                         return j;
                     }
                 }
             }
-        if(tipoFila == 1){
-            //implementar prioridade pela hora do voo
-        }    
-            
+            if (tipoFila == 1) {
+                //implementar prioridade pela hora do voo
+            }
+
         }
         return -1;
     }
@@ -501,15 +550,15 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTable jTableFilaEstacionamento;
     private javax.swing.JTable jTableFilaPouso;
     private javax.swing.JTable jTableFilaTaxiamento;
     private javax.swing.JTable jTableGates;
-    private javax.swing.JTable jTablePista;
     private javax.swing.JTextArea jTextAreaHistorico;
+    private javax.swing.JTextArea jTextAreaPista;
     // End of variables declaration//GEN-END:variables
 
     //metodo que recebe um modelo da tabela e uma lista, 
@@ -517,7 +566,8 @@ public class Principal extends javax.swing.JFrame {
     private void populaTabela(DefaultTableModel model, LinkedList<Aviao> fila) {
         model.setRowCount(0);
         fila.forEach((aviao) -> {
-            model.addRow(new String[]{aviao.getCodigoVoo(),
+            model.addRow(new String[]{
+                aviao.getCodigoVoo(),
                 aviao.getOrigem(),
                 Float.toString(aviao.getQuantidadeCombustivel()),
                 Float.toString(aviao.getPeso()),
@@ -533,7 +583,8 @@ public class Principal extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Aviao aviao : vetor) {
             if (aviao != null) {
-                model.addRow(new String[]{aviao.getCodigoVoo(),
+                model.addRow(new String[]{
+                    aviao.getCodigoVoo(),
                     aviao.getOrigem(),
                     Float.toString(aviao.getQuantidadeCombustivel()),
                     Float.toString(aviao.getPeso()),
@@ -545,7 +596,27 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    public void atualizaHora() {
+    //metodo que recebe um modelo da tabela e um objeto do tipo aviao, 
+    //basicamente, será usado para popular a tebela Pista
+    private void populaTabela(DefaultTableModel model, Aviao aviao) {
+        model.setRowCount(0);
+        model.addRow(new String[]{
+            aviao.getCodigoVoo(),
+            aviao.getOrigem(),
+            Float.toString(aviao.getQuantidadeCombustivel()),
+            Float.toString(aviao.getPeso()),
+            tipoPrioridade[aviao.getPrioridade()],
+            Integer.toString(aviao.getHoraVoo()),
+            statusAviao[aviao.getStatus()]});
+    }
+    //FIM TESTE
+
+    private void limpaTabela(DefaultTableModel model) {
+        model.setRowCount(0);
+    }
+
+    //método que cria uma thread para ficar atualizando o label HORA de 1 em 1s
+    private void atualizaHora() {
 
         Thread t = new Thread() {
 
@@ -557,11 +628,15 @@ public class Principal extends javax.swing.JFrame {
                     try {
                         sleep(1000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+
                     }
                 }
             }
         };
         t.start();
+    }
+
+    void teste(Aviao aviao) {
+        this.jTextAreaPista.append(aviao.getCodigoVoo());
     }
 }

@@ -402,15 +402,17 @@ public class Principal extends javax.swing.JFrame {
     private void iniciar() {
         //iteracoes da pista 
         int count = 0;
+        //variável para controlar as decolagens, a cada 4 pouso 1 decolagem
+        int pousoAviao = 1;
 
         //enquanto tiver avioes para usar a pista, continua o funcionamento
         while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty() || !filaGate.isEmpty()) {
 
             //atribui ao objeto "aviao" o aviao com maior prioridade
 //            Aviao aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
+                Aviao aviao = filaPouso.get(0);
             
-            //TESTEE apenas para pegar os avioes em ordem crescente
-            Aviao aviao = filaPouso.get(0);             
+            
 
 //#################################### RECEBE AVIÃO JÁ REMOVA DA FILA DE POUSO ############           
             filaPouso.remove(aviao);
@@ -428,6 +430,10 @@ public class Principal extends javax.swing.JFrame {
             threadSleep();
             //limpa a pista
             modelPista.setRowCount(0);
+
+            //incremento da variável
+            pousoAviao++;
+
 //#################################### PREENCHE NOS GATES ATÉ 5 ############################
             //enquanto não tiver 5 no gate, adiciona
             if (filaGate.size() < 5 && filaEstacionamento.isEmpty()) {
@@ -448,8 +454,10 @@ public class Principal extends javax.swing.JFrame {
                 //auto scroll
                 jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
 
-            } //###################################### GATE >5 MANDA PARA ESTACIONAMENTO ###
-            else if (filaGate.size() >= 5) {
+            }
+
+//###################################### GATE >5 MANDA PARA ESTACIONAMENTO ###            
+            if (filaGate.size() >= 5) {
 
                 //adiciona na filaEstacionamento
                 filaEstacionamento.add(aviao);
@@ -466,10 +474,10 @@ public class Principal extends javax.swing.JFrame {
             }
 //################## SE GATE <5 REMOVE DO ESTACIONAMENTO E MANDA PARA O GATE ###############            
             if (filaGate.size() < 5 && !filaEstacionamento.isEmpty()) {
-               Aviao aviaoGate =  filaEstacionamento.get(0);
-               filaEstacionamento.removeFirst();
-               
-               filaGate.add(aviao); //popular tabela gates
+                Aviao aviaoGate = filaEstacionamento.get(0);
+                filaEstacionamento.removeFirst();
+
+                filaGate.add(aviao); //popular tabela gates
                 // status GATE
                 aviao.setStatus(6);
                 //zera o combustível
@@ -478,22 +486,24 @@ public class Principal extends javax.swing.JFrame {
                 aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
                 //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
                 //aviao.setHoraVoo(hora + random.nextInt(50));
-                aviao.setHoraVoo(100 + hora);
-
+                //aviao.setHoraVoo(100 + hora);
+                aviao.setHoraVoo(random.nextInt(100) +hora);
+                
                 //atualiza as 2 tabelas que foram alteradas
                 populaTabela(modelGates, filaGate);
                 populaTabela(modelFilaEstacionamento, filaEstacionamento);
                 jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
                 //auto scroll
                 jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-               
+
             }
+
 //################################### REMOVE DO GATE E MANDA PARA TAXIAMENTO ###############
-            if (filaEstacionamento.size() > 3) {
+            if (filaGate.size() >= 5) {
 
                 //como gate não tem prioridade, pega sempre o 1º aviao da lista
                 Aviao aviaoTaxiamento = filaGate.get(0);
-                System.out.println("Taxiando " + aviaoTaxiamento.getCodigoVoo());
+
                 filaTaxiamento.add(aviaoTaxiamento);
                 filaGate.removeFirst();
 
@@ -511,9 +521,20 @@ public class Principal extends javax.swing.JFrame {
 
             }
 
-            //a cada 2 iterações no laço, libera 1 vaga no gate   
-            //a cada 3 iterações no laço, 1 avião do taxiamento decola 
-            if (count % 3 == 0) {
+            //a cada 3 pousos, 1 decolagem
+            if (!filaTaxiamento.isEmpty()) {
+
+                //método que pega o aviao com maior prioridade para decolar
+                Aviao aviaoDecolar = filaTaxiamento.get(getMaxPrioridade(filaPouso, tipoPrioridade, 1));
+                //Aviao aviaoDecolar = filaTaxiamento.get(0);
+
+                filaTaxiamento.remove(aviaoDecolar);
+                //filaTaxiamento.removeFirst();
+                
+                populaTabela(modelFilaTaxiamento, filaTaxiamento);
+                
+                jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolou! hora do voo: "+aviaoDecolar.getHoraVoo()+ "\n");
+                //jTextAreaHistorico.append(aviaoDecolar.getCodigoVoo()+" I BELIEVE I CAN FLY!!!!!!!!!!!" + "\n");
             }
 
             System.out.println("iteracoes: " + count);
@@ -527,7 +548,7 @@ public class Principal extends javax.swing.JFrame {
     //método que faz a thread dormir por 2s, só para não escrever várias vezes a mesma coisa
     private void threadSleep() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
 
         }
@@ -549,11 +570,21 @@ public class Principal extends javax.swing.JFrame {
                     }
                 }
             }
-            if (tipoFila == 1) {
-                //implementar prioridade pela hora do voo
-            }
-
         }
+        
+    //retorna o index do aviao com menor hora de voo    
+        if (tipoFila == 1) {
+            int menor = 9999;
+            int index = 0;
+            for (int i = 0; i < filaTaxiamento.size(); i++) {
+                if (filaTaxiamento.get(i).getHoraVoo() < menor) {
+                    menor = filaTaxiamento.get(i).getHoraVoo();
+                    index = i;
+                }
+            }
+            return index;
+        }
+
         return -1;
     }
 

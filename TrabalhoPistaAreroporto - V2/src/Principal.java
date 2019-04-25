@@ -48,7 +48,7 @@ public class Principal extends javax.swing.JFrame {
         atualizaHora();
 
         //inica com 30 aviões na fila de pouso
-        criarAviao(filaPouso, 0, 0, 10);
+        criarAviao(filaPouso, 0, 0, 20);
         //popula a tabela de pouso
         populaTabela(modelFilaPouso, filaPouso);
 
@@ -83,7 +83,6 @@ public class Principal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButtonPopular = new javax.swing.JButton();
         jLabelHora = new javax.swing.JLabel();
         jLabelUpdateHora = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -104,7 +103,7 @@ public class Principal extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -112,6 +111,9 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(jTableFilaPouso);
+        if (jTableFilaPouso.getColumnModel().getColumnCount() > 0) {
+            jTableFilaPouso.getColumnModel().getColumn(5).setPreferredWidth(20);
+        }
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("PISTA PRINCIPAL");
@@ -138,7 +140,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel3.setText("FILA TAXIAMENTO");
 
         jButtonIniciar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButtonIniciar.setText("INICIAR");
+        jButtonIniciar.setText("ADD +1 AVIÃO");
         jButtonIniciar.setToolTipText("");
         jButtonIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,15 +199,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel5.setText("GATES");
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel6.setText("HISTORICO");
-
-        jButtonPopular.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButtonPopular.setText("POPULAR FILAS");
-        jButtonPopular.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPopularActionPerformed(evt);
-            }
-        });
+        jLabel6.setText("HISTÓRICO");
 
         jLabelHora.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabelHora.setText("HORA: ");
@@ -235,48 +229,45 @@ public class Principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 839, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
                                 .addComponent(jLabelHora)
                                 .addGap(1, 1, 1)
                                 .addComponent(jLabelUpdateHora, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButtonPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+                                .addGap(946, 946, 946)
                                 .addComponent(jButtonIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1025, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(144, 144, 144)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGap(245, 245, 245)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(10, 10, 10)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(328, 328, 328)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(29, 29, 29)
+                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1028, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 1025, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,74 +275,49 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(11, 11, 11)
-                        .addComponent(jLabel1)
-                        .addGap(11, 11, 11))
+                        .addComponent(jLabel3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(jLabel1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 57, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButtonIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButtonPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabelHora)
-                        .addComponent(jLabelUpdateHora, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 3, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelHora)
+                            .addComponent(jLabelUpdateHora, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)
+                        .addComponent(jButtonIniciar)
+                        .addGap(16, 16, 16)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonPopularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPopularActionPerformed
-        //limpar listas antes de popular
-        filaPouso.clear();
-        filaTaxiamento.clear();
-        filaEstacionamento.clear();
-
-        // criar um dialogo que pede quantidade de avioes em cada fila
-        //Chama o criarAviao(LinkedList<Aviao> fila, int status, int tipoFila, int quantidade)
-        // tipoFila = 0 - filaPouso  1 - filaTaxiamento 2 - filaEstacioamento
-        // status = "Aguardando pouso", "Pousando", "Taxiando", "Decolando", "Saindo da pista", "Estacionamento"
-//        int qtdFila = Integer.parseInt(JOptionPane.showInputDialog("Quantidade para fila POUSO: "));
-//        criarAviao(filaPouso, 0, 0, qtdFila);
-//        qtdFila = Integer.parseInt(JOptionPane.showInputDialog("Quantidade para fila TAXIAMENTO: "));
-//        criarAviao(filaTaxiamento, 2, 1, qtdFila);
-//        qtdFila = Integer.parseInt(JOptionPane.showInputDialog("Quantidade para fila ESTACIONAMENTO: "));
-//        criarAviao(filaEstacioamento, 5, 2, qtdFila);
-        //POPULAR TABELAS
-        populaTabela(modelFilaPouso, filaPouso);
-        populaTabela(modelFilaTaxiamento, filaTaxiamento);
-        populaTabela(modelFilaEstacionamento, filaEstacionamento);
-        //liberar o iniciar
-        jButtonIniciar.setEnabled(true);
-    }//GEN-LAST:event_jButtonPopularActionPerformed
-
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
-        //Criar metodo que inicia o sistema todo, todo o funcionamento entre o Aeroporto (servidor) e as listas de avioes
+         criarAviao(filaPouso, 0, 0, 1);
+         populaTabela(modelFilaPouso, filaPouso);
 
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
@@ -394,167 +360,198 @@ public class Principal extends javax.swing.JFrame {
         });
     }
 
-    Aviao aviao;
     //iteracoes da pista 
     int count = 0;
+
+    int qtdPouso = 0;
+    boolean teste = false;
 
     //inicia todo o funcionamento do aeroporto
     private void iniciar() {
         //enquanto tiver avioes para usar a pista, continua o funcionamento
         while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty() || !filaGate.isEmpty()) {
 
-            System.out.println("iteracoes: " + count);
-//atribui ao objeto "aviao" o aviao com maior prioridade
-//            if (!filaPouso.isEmpty()) {
-//                aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
-//            }
-
-//REMOVE DO GATE E MANDA PARA TAXIAMENTO 
-            if (count % 2 == 0) {
-                if (!filaGate.isEmpty()) {
-                    gateParaTaxiamento();
-                    count++;
+            //enra 1 vez só, para preencher todos os gates
+            if (teste == false) {
+                if (!filaPouso.isEmpty()) {
+                    for (int i = 0; i < 5; i++) {
+                        pousoParaGate();
+                        starvation("gasolina");
+                        qtdPouso++;
+                    }
+                    teste = true;
                 }
             }
-// A CADA 3 POUSO 1 DECOLA 
-            if (filaPouso.isEmpty() || filaTaxiamento.isEmpty()) {
-                taxiamentoParaDecolar();
+
+            if (filaGate.size() < 5) {
+                if (!filaPouso.isEmpty()) {
+                    pousoParaGate();
+                    starvation("gasolina");
+                    qtdPouso++;
+                }
+
             }
-            if (count % 3 == 0) {
-                System.out.println("decola");
+            if (!filaPouso.isEmpty()) {
+                pousoParaEstacionamento();
+                starvation("gasolina");
+            }
+
+            if (!filaEstacionamento.isEmpty()) {
+                //so manda para o gate se tiver espaço
+                if (filaGate.size() < 5) {
+                    estacionamentoParaGate();
+                }
+
+            }
+
+            if (!filaGate.isEmpty()) {
+                gateParaTaxiamento();
+                
+            }
+
+            if (qtdPouso == 3 || filaPouso.isEmpty()) {
                 if (!filaTaxiamento.isEmpty()) {
                     taxiamentoParaDecolar();
+                    qtdPouso = 0;
                 }
             }
-// PREENCHE GATES ATÉ 5 
-            if (filaGate.size() < 5 && filaEstacionamento.isEmpty()) {
-                pousoParaGate();
-                count++;
+            
+            //a cada volta do laço starvation na fila de taxiamento
+            if(!filaTaxiamento.isEmpty()){
+                starvation("hora");
             }
-// GATE >5 MANDA PARA ESTACIONAMENTO       
-            if (filaGate.size() >= 5) {
-                pousoParaEstacionamento();
-                count++;
+            
+        }
+    }
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
+//@@@@@@@@@@@@@@@@@ MÉTODOS @@@@@@@@@@@@@@@@
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    private void starvation(String tipoStarvation) {
+        if (tipoStarvation.equals("gasolina")) {
+            for (Aviao aviao : filaPouso) {
+                aviao.setQuantidadeCombustivel(aviao.getQuantidadeCombustivel() - 5);
+                if(aviao.getQuantidadeCombustivel() < 30){
+                    aviao.setPrioridade(2);
+                }
             }
-//SE GATE <5 REMOVE DO ESTACIONAMENTO E MANDA PARA O GATE        
-            if (filaGate.size() < 5 && !filaEstacionamento.isEmpty()) {
-                estacionamentoParaGate();
+        }
+
+        if (tipoStarvation.equals("hora")) {
+            for (Aviao aviao : filaTaxiamento) {
+                aviao.setHoraVoo(aviao.getHoraVoo() - random.nextInt(20));
+                populaTabela(modelFilaTaxiamento, filaTaxiamento);
             }
         }
     }
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
-    //@@@@@@@@@@@@@@@@@ MÉTODOS @@@@@@@@@@@@@@@@
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-    private void removeFilaPouso() {
-        if (!filaPouso.isEmpty()) {
-            aviao = filaPouso.getFirst();
-            removeFilaPouso();
-        }
+    //remove da fila de pouso e adiciona na fila do gate
+    private void pousoParaGate() {
+        Aviao aviaoPouso = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
+//        Aviao aviaoPouso = filaPouso.getFirst();
 
-        filaPouso.remove(aviao);
+        filaPouso.remove(aviaoPouso);
         //status para "POUSANDO"
-        aviao.setStatus(1);
+        aviaoPouso.setStatus(1);
         //atualiza a tabela filaPouso
         populaTabela(modelFilaPouso, filaPouso);
-        //mostra por 2s o aviao ocupando a pista 
-        populaTabela(modelPista, aviao);
+        //mostra avião pousando
+        populaTabela(modelPista, aviaoPouso);
         //inseri no histórico
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+        jTextAreaHistorico.append("Aviao " + aviaoPouso.getCodigoVoo() + " pousou \n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
         //espera 2s
         threadSleep();
         //limpa a pista
         modelPista.setRowCount(0);
-    }
 
-    private void pousoParaGate() {
-        //remova aviao do estacionamento
-        removeFilaPouso();
-        filaGate.add(aviao); //popular tabela gates
+        filaGate.add(aviaoPouso); //popular tabela gates
         // status GATE
-        aviao.setStatus(6);
+        aviaoPouso.setStatus(6);
         //zera o combustível
-        aviao.setQuantidadeCombustivel(0);
+        aviaoPouso.setQuantidadeCombustivel(0);
         //"abastece o aviao"
-        aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
+        aviaoPouso.setQuantidadeCombustivel(random.nextInt(100) + 100);
         //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
         //aviao.setHoraVoo(hora + random.nextInt(50));
-        aviao.setHoraVoo(100 + hora);
-
+        aviaoPouso.setHoraVoo(100 + hora);
         populaTabela(modelGates, filaGate);
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
+        jTextAreaHistorico.append("Aviao " + aviaoPouso.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        threadSleep();
+
     }
 
+    //remove da fila de pouso e adiciona na fila de estacionamento
     private void pousoParaEstacionamento() {
 
-        //TESTE
-        if (!filaPouso.isEmpty()) {
-            aviao = filaPouso.getFirst();
-            removeFilaPouso();
-        }
-        filaPouso.remove(aviao);
+        Aviao aviaoPouso = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
+//        Aviao aviaoPouso = filaPouso.getFirst();
+
+        filaPouso.remove(aviaoPouso);
         //status para "POUSANDO"
-        aviao.setStatus(1);
+        aviaoPouso.setStatus(1);
         //atualiza a tabela filaPouso
         populaTabela(modelFilaPouso, filaPouso);
-        //mostra por 2s o aviao ocupando a pista 
-        populaTabela(modelPista, aviao);
+        //mostra avião pousando
+        populaTabela(modelPista, aviaoPouso);
         //inseri no histórico
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+        jTextAreaHistorico.append("Aviao " + aviaoPouso.getCodigoVoo() + " pousou \n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
         //espera 2s
         threadSleep();
         //limpa a pista
         modelPista.setRowCount(0);
-        //FIM TESTE
 
         //adiciona na filaEstacionamento
-        filaEstacionamento.add(aviao);
+        filaEstacionamento.add(aviaoPouso);
         //muda o status para "ESTACIONAMENTO"
-        aviao.setStatus(5);
+        aviaoPouso.setStatus(5);
         //atualiza as tabelas
-        populaTabela(modelFilaPouso, filaPouso);
+//        populaTabela(modelFilaPouso, filaPouso); //talvez não precisa pois, a tabela já atualizada logo a cima no método
         populaTabela(modelFilaEstacionamento, filaEstacionamento);
 
         //inseri no histórico que o aviao foi para a fila de estacionamento
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
+        jTextAreaHistorico.append("Aviao " + aviaoPouso.getCodigoVoo() + " foi para Estacionamento \n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
     }
 
+    //remove da fila do estacionamento e adiciona na fila do gate
     private void estacionamentoParaGate() {
-        Aviao aviaoGate = filaEstacionamento.get(0);
+        Aviao aviaoGate = filaEstacionamento.getFirst(); //pega o primeito da lista, pq não tem prioridade
+        //filaEstacionamento.remove(aviaoGate);
         filaEstacionamento.removeFirst();
 
-        filaGate.add(aviao); //popular tabela gates
+        filaGate.add(aviaoGate);
+
         // status GATE
-        aviao.setStatus(6);
+        aviaoGate.setStatus(6);
         //zera o combustível
-        aviao.setQuantidadeCombustivel(0);
+        aviaoGate.setQuantidadeCombustivel(0);
         //"abastece o aviao"
-        aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
-        //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
-        //aviao.setHoraVoo(hora + random.nextInt(50));
-        //aviao.setHoraVoo(100 + hora);
-        aviao.setHoraVoo(random.nextInt(100) + hora);
+        aviaoGate.setQuantidadeCombustivel(random.nextInt(100) + 100);
+        //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random        
+        aviaoGate.setHoraVoo(random.nextInt(100) + hora);
 
         //atualiza as 2 tabelas que foram alteradas
         populaTabela(modelGates, filaGate);
         populaTabela(modelFilaEstacionamento, filaEstacionamento);
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
+
+        threadSleep();
+
+        jTextAreaHistorico.append("Aviao " + aviaoGate.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
     }
 
+    //remove da fila do gate e adiciona na fila do taxiamento
     private void gateParaTaxiamento() {
         //como gate não tem prioridade, pega sempre o 1º aviao da lista
         Aviao aviaoTaxiamento = filaGate.get(0);
-
         filaTaxiamento.add(aviaoTaxiamento);
         filaGate.removeFirst();
 
@@ -569,8 +566,10 @@ public class Principal extends javax.swing.JFrame {
         jTextAreaHistorico.append("Aviao " + aviaoTaxiamento.getCodigoVoo() + " está taxiando \n");
         //auto scroll
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        threadSleep();
     }
 
+    //remova da fila de taxiamento e sai do sistema
     private void taxiamentoParaDecolar() {
         //método que pega o aviao com maior prioridade para decolar
         Aviao aviaoDecolar = filaTaxiamento.get(getMaxPrioridade(filaTaxiamento, tipoPrioridade, 1));
@@ -583,10 +582,12 @@ public class Principal extends javax.swing.JFrame {
 
         //mostra por 2s o aviao ocupando a pista 
         populaTabela(modelPista, aviaoDecolar);
-        jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolou! hora do voo: " + aviaoDecolar.getHoraVoo() + "\n");
+        jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolando! hora do voo: " + aviaoDecolar.getHoraVoo() + "\n");
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
         threadSleep();
         modelPista.setRowCount(0);
+        jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolou! hora do voo: " + aviaoDecolar.getHoraVoo() + "\n");
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
 
     }
 
@@ -644,7 +645,7 @@ public class Principal extends javax.swing.JFrame {
             aviao.setOrigem(origens[random.nextInt(origens.length)]);
             aviao.setPeso(random.nextInt(1000) + 1000);
             aviao.setPosicaoFila(fila.size());
-            aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
+            aviao.setQuantidadeCombustivel(random.nextInt(50) + 50);
             aviao.setStatus(status);
             aviao.setTipoFila(tipoFila);// 0 - filaPouso  1 - filaTaxiamento 2 - filaEstacioamento
             aviao.setTransponder("TSP-0" + quantidadeAviao);
@@ -655,7 +656,6 @@ public class Principal extends javax.swing.JFrame {
                     aviao.setPrioridade(1); //pesado no ar
                 }
                 if (aviao.getQuantidadeCombustivel() < 60) {
-
                     aviao.setPrioridade(2); //emergencia pelo combustivel
                 }
             }
@@ -743,7 +743,6 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonIniciar;
-    private javax.swing.JButton jButtonPopular;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

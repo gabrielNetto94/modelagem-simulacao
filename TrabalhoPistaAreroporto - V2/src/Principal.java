@@ -16,7 +16,7 @@ public class Principal extends javax.swing.JFrame {
     public String[] statusAviao = {"Aguardando pouso", "Pousando", "Taxiando", "Decolando", "Saindo da pista", "Aguarda Gate", "Aeronave no Gate"};
     public String origens[] = {"Brasília", "Cuiabá", "Rio de Janeiro", "Manaus", "Vitória", "Londrina", "Belo Horizonte", "Florianópolis", "Fortaleza", "Porto Alegre"};
     Random random = new Random();
-    public int quantidadeAviao = 0;
+    public int quantidadeAviao = 1;
     public int hora = 0;
 
     //listas das filas
@@ -48,12 +48,13 @@ public class Principal extends javax.swing.JFrame {
         atualizaHora();
 
         //inica com 30 aviões na fila de pouso
-        criarAviao(filaPouso, 0, 0, 15);
+        criarAviao(filaPouso, 0, 0, 10);
         //popula a tabela de pouso
         populaTabela(modelFilaPouso, filaPouso);
 
         //cria uma thread para inicar o funcionanmento do aeroporto, para não travar a interface gráfica no click do mouse
         Thread t = new Thread() {
+            @Override
             public void run() {
                 iniciar();
             }
@@ -351,12 +352,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void jButtonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarActionPerformed
         //Criar metodo que inicia o sistema todo, todo o funcionamento entre o Aeroporto (servidor) e as listas de avioes
-        Thread t = new Thread() {
-            public void run() {
-                iniciar();
-            }
-        };
-        t.start();
+
     }//GEN-LAST:event_jButtonIniciarActionPerformed
 
     /**
@@ -398,154 +394,179 @@ public class Principal extends javax.swing.JFrame {
         });
     }
 
-    //inicia todo o funcionamento do aeroporto
+    Aviao aviao;
+    int count = 0;
+//inicia todo o funcionamento do aeroporto
+
     private void iniciar() {
         //iteracoes da pista 
-        int count = 0;
-        //variável para controlar as decolagens, a cada 4 pouso 1 decolagem
-        int pousoAviao = 1;
 
         //enquanto tiver avioes para usar a pista, continua o funcionamento
         while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty() || !filaGate.isEmpty()) {
 
-            //atribui ao objeto "aviao" o aviao com maior prioridade
-//            Aviao aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
-                Aviao aviao = filaPouso.get(0);
-            
-            
-
-//#################################### RECEBE AVIÃO JÁ REMOVA DA FILA DE POUSO ############           
-            filaPouso.remove(aviao);
-            //status para "POUSANDO"
-            aviao.setStatus(1);
-            //atualiza a tabela filaPouso
-            populaTabela(modelFilaPouso, filaPouso);
-            //mostra por 2s o aviao ocupando a pista 
-            populaTabela(modelPista, aviao);
-            //inseri no histórico
-            jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
-            //auto scroll
-            jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-            //espera 2s
-            threadSleep();
-            //limpa a pista
-            modelPista.setRowCount(0);
-
-            //incremento da variável
-            pousoAviao++;
-
-//#################################### PREENCHE NOS GATES ATÉ 5 ############################
-            //enquanto não tiver 5 no gate, adiciona
-            if (filaGate.size() < 5 && filaEstacionamento.isEmpty()) {
-                //remova aviao do estacionamento
-                filaGate.add(aviao); //popular tabela gates
-                // status GATE
-                aviao.setStatus(6);
-                //zera o combustível
-                aviao.setQuantidadeCombustivel(0);
-                //"abastece o aviao"
-                aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
-                //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
-                //aviao.setHoraVoo(hora + random.nextInt(50));
-                aviao.setHoraVoo(100 + hora);
-
-                populaTabela(modelGates, filaGate);
-                jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
-                //auto scroll
-                jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-
-            }
-
-//###################################### GATE >5 MANDA PARA ESTACIONAMENTO ###            
-            if (filaGate.size() >= 5) {
-
-                //adiciona na filaEstacionamento
-                filaEstacionamento.add(aviao);
-                //muda o status para "ESTACIONAMENTO"
-                aviao.setStatus(5);
-                //atualiza as tabelas
-                populaTabela(modelFilaPouso, filaPouso);
-                populaTabela(modelFilaEstacionamento, filaEstacionamento);
-
-                //inseri no histórico que o aviao foi para a fila de estacionamento
-                jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
-                //auto scroll
-                jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-            }
-//################## SE GATE <5 REMOVE DO ESTACIONAMENTO E MANDA PARA O GATE ###############            
-            if (filaGate.size() < 5 && !filaEstacionamento.isEmpty()) {
-                Aviao aviaoGate = filaEstacionamento.get(0);
-                filaEstacionamento.removeFirst();
-
-                filaGate.add(aviao); //popular tabela gates
-                // status GATE
-                aviao.setStatus(6);
-                //zera o combustível
-                aviao.setQuantidadeCombustivel(0);
-                //"abastece o aviao"
-                aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
-                //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
-                //aviao.setHoraVoo(hora + random.nextInt(50));
-                //aviao.setHoraVoo(100 + hora);
-                aviao.setHoraVoo(random.nextInt(100) +hora);
-                
-                //atualiza as 2 tabelas que foram alteradas
-                populaTabela(modelGates, filaGate);
-                populaTabela(modelFilaEstacionamento, filaEstacionamento);
-                jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
-                //auto scroll
-                jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-
-            }
-
-//################################### REMOVE DO GATE E MANDA PARA TAXIAMENTO ###############
-            if (filaGate.size() >= 5) {
-
-                //como gate não tem prioridade, pega sempre o 1º aviao da lista
-                Aviao aviaoTaxiamento = filaGate.get(0);
-
-                filaTaxiamento.add(aviaoTaxiamento);
-                filaGate.removeFirst();
-
-                //atualiza o status para "TAXIANDO"
-                aviaoTaxiamento.setStatus(2);
-
-                //atualiaz as tabelas
-                populaTabela(modelGates, filaGate);
-                populaTabela(modelFilaTaxiamento, filaTaxiamento);
-
-                //inseri no histórico que o aviao foi para a fila de estacionamento
-                jTextAreaHistorico.append("Aviao " + aviaoTaxiamento.getCodigoVoo() + " está taxiando \n");
-                //auto scroll
-                jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-
-            }
-
-            //a cada 3 pousos, 1 decolagem
-            if (!filaTaxiamento.isEmpty()) {
-
-                //método que pega o aviao com maior prioridade para decolar
-                Aviao aviaoDecolar = filaTaxiamento.get(getMaxPrioridade(filaPouso, tipoPrioridade, 1));
-                //Aviao aviaoDecolar = filaTaxiamento.get(0);
-
-                filaTaxiamento.remove(aviaoDecolar);
-                //filaTaxiamento.removeFirst();
-                
-                populaTabela(modelFilaTaxiamento, filaTaxiamento);
-                
-                jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolou! hora do voo: "+aviaoDecolar.getHoraVoo()+ "\n");
-                //jTextAreaHistorico.append(aviaoDecolar.getCodigoVoo()+" I BELIEVE I CAN FLY!!!!!!!!!!!" + "\n");
-            }
-
             System.out.println("iteracoes: " + count);
-            count++;
+//atribui ao objeto "aviao" o aviao com maior prioridade
+//            if (!filaPouso.isEmpty()) {
+//                aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
+//            }
+
+            if (!filaPouso.isEmpty()) {
+                aviao = filaPouso.getFirst();
+                removeFilaPouso();
+            }
+
+//REMOVE DO GATE E MANDA PARA TAXIAMENTO 
+            if (count % 2 == 0) {
+                if (!filaGate.isEmpty()) {
+                    mandaDoGateParaTaxiamento();
+                    count++;
+                }
+            }
+// A CADA 3 POUSO 1 DECOLA 
+            if (filaPouso.isEmpty() || filaTaxiamento.isEmpty()) {
+                decolaAviao();
+            }
+            if (count % 3 == 0) {
+                System.out.println("decola");
+                if (!filaTaxiamento.isEmpty()) {
+                    decolaAviao();
+                }
+            }
+// PREENCHE GATES ATÉ 5 
+            if (filaGate.size() < 5 && filaEstacionamento.isEmpty()) {
+                adicionaGate();
+                count++;
+            }
+// GATE >5 MANDA PARA ESTACIONAMENTO       
+            if (filaGate.size() >= 5) {
+                filaPousoParaEstacionamento();
+                count++;
+            }
+//SE GATE <5 REMOVE DO ESTACIONAMENTO E MANDA PARA O GATE        
+            if (filaGate.size() < 5 && !filaEstacionamento.isEmpty()) {
+                removeEstacionamentoMandaParaGate();
+            }
         }
     }
-
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
     //@@@@@@@@@@@@@@@@@ MÉTODOS @@@@@@@@@@@@@@@@
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    //método que faz a thread dormir por 2s, só para não escrever várias vezes a mesma coisa
+
+    private void adicionaGate() {
+        //remova aviao do estacionamento
+        filaGate.add(aviao); //popular tabela gates
+        // status GATE
+        aviao.setStatus(6);
+        //zera o combustível
+        aviao.setQuantidadeCombustivel(0);
+        //"abastece o aviao"
+        aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
+        //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
+        //aviao.setHoraVoo(hora + random.nextInt(50));
+        aviao.setHoraVoo(100 + hora);
+
+        populaTabela(modelGates, filaGate);
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+    }
+
+    private void removeEstacionamentoMandaParaGate() {
+        Aviao aviaoGate = filaEstacionamento.get(0);
+        filaEstacionamento.removeFirst();
+
+        filaGate.add(aviao); //popular tabela gates
+        // status GATE
+        aviao.setStatus(6);
+        //zera o combustível
+        aviao.setQuantidadeCombustivel(0);
+        //"abastece o aviao"
+        aviao.setQuantidadeCombustivel(random.nextInt(100) + 100);
+        //atualiza a hora de voo do aviao, pega a variável hora que está sendo incrementada pela thread e adiciona mais um tempo random
+        //aviao.setHoraVoo(hora + random.nextInt(50));
+        //aviao.setHoraVoo(100 + hora);
+        aviao.setHoraVoo(random.nextInt(100) + hora);
+
+        //atualiza as 2 tabelas que foram alteradas
+        populaTabela(modelGates, filaGate);
+        populaTabela(modelFilaEstacionamento, filaEstacionamento);
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para o portão " + filaGate.size() + "\n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+    }
+
+    private void filaPousoParaEstacionamento() {
+        //adiciona na filaEstacionamento
+        filaEstacionamento.add(aviao);
+        //muda o status para "ESTACIONAMENTO"
+        aviao.setStatus(5);
+        //atualiza as tabelas
+        populaTabela(modelFilaPouso, filaPouso);
+        populaTabela(modelFilaEstacionamento, filaEstacionamento);
+
+        //inseri no histórico que o aviao foi para a fila de estacionamento
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+    }
+
+    private void mandaDoGateParaTaxiamento() {
+        //como gate não tem prioridade, pega sempre o 1º aviao da lista
+        Aviao aviaoTaxiamento = filaGate.get(0);
+
+        filaTaxiamento.add(aviaoTaxiamento);
+        filaGate.removeFirst();
+
+        //atualiza o status para "TAXIANDO"
+        aviaoTaxiamento.setStatus(2);
+
+        //atualiaz as tabelas
+        populaTabela(modelGates, filaGate);
+        populaTabela(modelFilaTaxiamento, filaTaxiamento);
+
+        //inseri no histórico que o aviao foi para a fila de estacionamento
+        jTextAreaHistorico.append("Aviao " + aviaoTaxiamento.getCodigoVoo() + " está taxiando \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+    }
+
+    private void removeFilaPouso() {
+        filaPouso.remove(aviao);
+        //status para "POUSANDO"
+        aviao.setStatus(1);
+        //atualiza a tabela filaPouso
+        populaTabela(modelFilaPouso, filaPouso);
+        //mostra por 2s o aviao ocupando a pista 
+        populaTabela(modelPista, aviao);
+        //inseri no histórico
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        //espera 2s
+        threadSleep();
+        //limpa a pista
+        modelPista.setRowCount(0);
+    }
+
+    private void decolaAviao() {
+        //método que pega o aviao com maior prioridade para decolar
+        Aviao aviaoDecolar = filaTaxiamento.get(getMaxPrioridade(filaTaxiamento, tipoPrioridade, 1));
+        //Aviao aviaoDecolar = filaTaxiamento.get(0);
+
+        filaTaxiamento.remove(aviaoDecolar);
+        //filaTaxiamento.removeFirst();
+        populaTabela(modelFilaTaxiamento, filaTaxiamento);
+        aviaoDecolar.setStatus(3);
+
+        //mostra por 2s o aviao ocupando a pista 
+        populaTabela(modelPista, aviaoDecolar);
+        jTextAreaHistorico.append("Aviao " + aviaoDecolar.getCodigoVoo() + " decolou! hora do voo: " + aviaoDecolar.getHoraVoo() + "\n");
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        threadSleep();
+        modelPista.setRowCount(0);
+
+    }
+
     private void threadSleep() {
         try {
             Thread.sleep(1000);
@@ -571,8 +592,8 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         }
-        
-    //retorna o index do aviao com menor hora de voo    
+
+        //retorna o index do aviao com menor hora de voo    
         if (tipoFila == 1) {
             int menor = 9999;
             int index = 0;

@@ -28,7 +28,10 @@ public class Teste {
 //        System.out.println(a);
         for (int i = 1; i <= 8; i++) {
             System.out.println(i);
-            if (i % 3 == 0) {
+            if (i % 2 == 0) {
+                System.out.println("#" + i);
+            }
+            else if (i % 3 == 0) {
                 System.out.println("@" + i);
             }
         }

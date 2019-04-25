@@ -395,12 +395,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     Aviao aviao;
+    //iteracoes da pista 
     int count = 0;
-//inicia todo o funcionamento do aeroporto
 
+    //inicia todo o funcionamento do aeroporto
     private void iniciar() {
-        //iteracoes da pista 
-
         //enquanto tiver avioes para usar a pista, continua o funcionamento
         while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty() || !filaGate.isEmpty()) {
 
@@ -410,41 +409,36 @@ public class Principal extends javax.swing.JFrame {
 //                aviao = filaPouso.get(getMaxPrioridade(filaPouso, tipoPrioridade, 0));
 //            }
 
-            if (!filaPouso.isEmpty()) {
-                aviao = filaPouso.getFirst();
-                removeFilaPouso();
-            }
-
 //REMOVE DO GATE E MANDA PARA TAXIAMENTO 
             if (count % 2 == 0) {
                 if (!filaGate.isEmpty()) {
-                    mandaDoGateParaTaxiamento();
+                    gateParaTaxiamento();
                     count++;
                 }
             }
 // A CADA 3 POUSO 1 DECOLA 
             if (filaPouso.isEmpty() || filaTaxiamento.isEmpty()) {
-                decolaAviao();
+                taxiamentoParaDecolar();
             }
             if (count % 3 == 0) {
                 System.out.println("decola");
                 if (!filaTaxiamento.isEmpty()) {
-                    decolaAviao();
+                    taxiamentoParaDecolar();
                 }
             }
 // PREENCHE GATES ATÉ 5 
             if (filaGate.size() < 5 && filaEstacionamento.isEmpty()) {
-                adicionaGate();
+                pousoParaGate();
                 count++;
             }
 // GATE >5 MANDA PARA ESTACIONAMENTO       
             if (filaGate.size() >= 5) {
-                filaPousoParaEstacionamento();
+                pousoParaEstacionamento();
                 count++;
             }
 //SE GATE <5 REMOVE DO ESTACIONAMENTO E MANDA PARA O GATE        
             if (filaGate.size() < 5 && !filaEstacionamento.isEmpty()) {
-                removeEstacionamentoMandaParaGate();
+                estacionamentoParaGate();
             }
         }
     }
@@ -452,8 +446,32 @@ public class Principal extends javax.swing.JFrame {
     //@@@@@@@@@@@@@@@@@ MÉTODOS @@@@@@@@@@@@@@@@
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-    private void adicionaGate() {
+    private void removeFilaPouso() {
+        if (!filaPouso.isEmpty()) {
+            aviao = filaPouso.getFirst();
+            removeFilaPouso();
+        }
+
+        filaPouso.remove(aviao);
+        //status para "POUSANDO"
+        aviao.setStatus(1);
+        //atualiza a tabela filaPouso
+        populaTabela(modelFilaPouso, filaPouso);
+        //mostra por 2s o aviao ocupando a pista 
+        populaTabela(modelPista, aviao);
+        //inseri no histórico
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        //espera 2s
+        threadSleep();
+        //limpa a pista
+        modelPista.setRowCount(0);
+    }
+
+    private void pousoParaGate() {
         //remova aviao do estacionamento
+        removeFilaPouso();
         filaGate.add(aviao); //popular tabela gates
         // status GATE
         aviao.setStatus(6);
@@ -471,7 +489,45 @@ public class Principal extends javax.swing.JFrame {
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
     }
 
-    private void removeEstacionamentoMandaParaGate() {
+    private void pousoParaEstacionamento() {
+
+        //TESTE
+        if (!filaPouso.isEmpty()) {
+            aviao = filaPouso.getFirst();
+            removeFilaPouso();
+        }
+        filaPouso.remove(aviao);
+        //status para "POUSANDO"
+        aviao.setStatus(1);
+        //atualiza a tabela filaPouso
+        populaTabela(modelFilaPouso, filaPouso);
+        //mostra por 2s o aviao ocupando a pista 
+        populaTabela(modelPista, aviao);
+        //inseri no histórico
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+        //espera 2s
+        threadSleep();
+        //limpa a pista
+        modelPista.setRowCount(0);
+        //FIM TESTE
+
+        //adiciona na filaEstacionamento
+        filaEstacionamento.add(aviao);
+        //muda o status para "ESTACIONAMENTO"
+        aviao.setStatus(5);
+        //atualiza as tabelas
+        populaTabela(modelFilaPouso, filaPouso);
+        populaTabela(modelFilaEstacionamento, filaEstacionamento);
+
+        //inseri no histórico que o aviao foi para a fila de estacionamento
+        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
+        //auto scroll
+        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
+    }
+
+    private void estacionamentoParaGate() {
         Aviao aviaoGate = filaEstacionamento.get(0);
         filaEstacionamento.removeFirst();
 
@@ -495,22 +551,7 @@ public class Principal extends javax.swing.JFrame {
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
     }
 
-    private void filaPousoParaEstacionamento() {
-        //adiciona na filaEstacionamento
-        filaEstacionamento.add(aviao);
-        //muda o status para "ESTACIONAMENTO"
-        aviao.setStatus(5);
-        //atualiza as tabelas
-        populaTabela(modelFilaPouso, filaPouso);
-        populaTabela(modelFilaEstacionamento, filaEstacionamento);
-
-        //inseri no histórico que o aviao foi para a fila de estacionamento
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " foi para Estacionamento \n");
-        //auto scroll
-        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-    }
-
-    private void mandaDoGateParaTaxiamento() {
+    private void gateParaTaxiamento() {
         //como gate não tem prioridade, pega sempre o 1º aviao da lista
         Aviao aviaoTaxiamento = filaGate.get(0);
 
@@ -530,25 +571,7 @@ public class Principal extends javax.swing.JFrame {
         jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
     }
 
-    private void removeFilaPouso() {
-        filaPouso.remove(aviao);
-        //status para "POUSANDO"
-        aviao.setStatus(1);
-        //atualiza a tabela filaPouso
-        populaTabela(modelFilaPouso, filaPouso);
-        //mostra por 2s o aviao ocupando a pista 
-        populaTabela(modelPista, aviao);
-        //inseri no histórico
-        jTextAreaHistorico.append("Aviao " + aviao.getCodigoVoo() + " pousou \n");
-        //auto scroll
-        jTextAreaHistorico.setCaretPosition(jTextAreaHistorico.getDocument().getLength());
-        //espera 2s
-        threadSleep();
-        //limpa a pista
-        modelPista.setRowCount(0);
-    }
-
-    private void decolaAviao() {
+    private void taxiamentoParaDecolar() {
         //método que pega o aviao com maior prioridade para decolar
         Aviao aviaoDecolar = filaTaxiamento.get(getMaxPrioridade(filaTaxiamento, tipoPrioridade, 1));
         //Aviao aviaoDecolar = filaTaxiamento.get(0);

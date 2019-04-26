@@ -359,8 +359,6 @@ public class Principal extends javax.swing.JFrame {
     }
 
     //iteracoes da pista 
-    int count = 0;
-
     int qtdPouso = 0;
     boolean teste = false;
 
@@ -368,14 +366,15 @@ public class Principal extends javax.swing.JFrame {
     private void iniciar() {
         //enquanto tiver avioes para usar a pista, continua o funcionamento
         while (!filaPouso.isEmpty() || !filaEstacionamento.isEmpty() || !filaTaxiamento.isEmpty() || !filaGate.isEmpty()) {
-            
-            if (qtdPouso == 3 || filaPouso.isEmpty()) {
+
+            if (qtdPouso % 2 == 0) {
+                System.out.println("pousa");
                 if (!filaTaxiamento.isEmpty()) {
                     taxiamentoParaDecolar();
-                    qtdPouso = 0;
+//                    qtdPouso = 0;
                 }
             }
-            
+
             //se a filaPous for <5 vai dar erro, pq ele vai preencher 5 aviões no gate por causa do for, e não tem 5 aviões na filaPouso
             if (filaPouso.size() >= 5) {
                 if (teste == false) {
@@ -384,20 +383,17 @@ public class Principal extends javax.swing.JFrame {
                         for (int i = 0; i < 5; i++) {
                             pousoParaGate();
                             starvation("gasolina");
-                            qtdPouso++;
-                            System.out.println("qtdPouso "+qtdPouso);
                         }
                         teste = true;
                     }
                 }
-            }//teste
+            }
 
             if (filaGate.size() < 5) {
                 if (!filaPouso.isEmpty()) {
                     pousoParaGate();
                     starvation("gasolina");
                     qtdPouso++;
-                    System.out.println("qtdPouso "+qtdPouso);
                 }
 
             }
@@ -429,7 +425,7 @@ public class Principal extends javax.swing.JFrame {
             if (!filaTaxiamento.isEmpty()) {
                 starvation("hora");
             }
-
+            System.out.println("qtdPouso " + qtdPouso);
         }
     }
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
